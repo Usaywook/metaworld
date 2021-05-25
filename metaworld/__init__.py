@@ -6,6 +6,7 @@ from typing import List, NamedTuple, Type
 
 import metaworld.envs.mujoco.env_dict as _env_dict
 import numpy as np
+from gym.envs.registration import register
 
 EnvName = str
 
@@ -222,3 +223,10 @@ class MT50(Benchmark):
         self._test_tasks = []
 
 __all__ = ["ML1", "MT1", "ML10", "MT10", "ML45", "MT50"]
+
+register(
+    id='ML10-v0',
+    entry_point='metaworld.envs.metaworld_env:ML10Env',
+    max_episode_steps=200,
+    reward_threshold=-25.0,
+)
