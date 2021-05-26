@@ -435,7 +435,6 @@ class SawyerXYZEnv(SawyerMocapBase, metaclass=abc.ABCMeta):
             # functionality and end up returning the same sort of tuple that
             # this does
             return self._last_stable_obs
-
         reward, info = self.evaluate_state(self._last_stable_obs, action)
         return self._last_stable_obs, reward, False, info
 

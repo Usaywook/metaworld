@@ -25,7 +25,7 @@ def test_all_ml1(env_name):
         assert env.random_init == True
         old_obj_init = env.obj_init_pos
         old_target_pos = env._target_pos
-        step_env(env, max_path_length=STEPS, render=False)
+        step_env(env, max_path_length=STEPS, render=True)
         assert np.all(np.allclose(old_obj_init, env.obj_init_pos))
         assert np.all(np.allclose(old_target_pos, env._target_pos))
     for env in train_env_instances.values():
@@ -72,10 +72,10 @@ def test_all_ml10():
         assert env.random_init == True
         old_obj_init = env.obj_init_pos
         old_target_pos = env._target_pos
-        step_env(env, max_path_length=STEPS, render=False)
+        step_env(env, max_path_length=STEPS, render=True)
         assert np.all(np.allclose(old_obj_init, env.obj_init_pos))
         assert np.all(np.allclose(old_target_pos, env._target_pos))
-        step_env(env, max_path_length=STEPS, render=False)
+        step_env(env, max_path_length=STEPS, render=True)
     for env in train_env_instances.values():
         env.close()
     del train_env_instances
@@ -91,10 +91,10 @@ def test_all_ml10():
         assert env.random_init == True
         old_obj_init = env.obj_init_pos
         old_target_pos = env._target_pos
-        step_env(env, max_path_length=STEPS, render=False)
+        step_env(env, max_path_length=STEPS, render=True)
         assert np.all(np.allclose(old_obj_init, env.obj_init_pos))
         assert np.all(np.allclose(old_target_pos, env._target_pos))
-        step_env(env, max_path_length=STEPS, render=False)
+        step_env(env, max_path_length=STEPS, render=True)
     for env in test_env_instances.values():
         env.close()
     train_test_rand_vecs = set()
@@ -297,3 +297,5 @@ def test_identical_environments():
     # test that 2 benchmarks with different seeds have different goals
     mt50_3 = metaworld.MT50(seed=50)
     helper_neq(mt50_1, mt50_3)
+
+# test_all_ml10()

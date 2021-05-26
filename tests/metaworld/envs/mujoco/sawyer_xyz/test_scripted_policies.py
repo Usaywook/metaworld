@@ -1,5 +1,10 @@
+import pdb
+import random
 import pytest
 
+import metaworld
+from metaworld.envs import (ALL_V2_ENVIRONMENTS_GOAL_HIDDEN,
+                            ALL_V2_ENVIRONMENTS_GOAL_OBSERVABLE)
 from metaworld.envs.mujoco.env_dict import ALL_V1_ENVIRONMENTS, ALL_V2_ENVIRONMENTS
 from metaworld.policies import *
 from tests.metaworld.envs.mujoco.sawyer_xyz.utils import trajectory_summary
@@ -189,7 +194,7 @@ test_cases_latest_noisy = [
     ['plate-slide-side-v2', SawyerPlateSlideSideV2Policy(), .1, .78],
     ['plate-slide-v1', SawyerPlateSlideV1Policy(), .1, .97],
     ['plate-slide-v2', SawyerPlateSlideV2Policy(), .1, .97],
-    ['reach-v2', SawyerReachV2Policy(), .1, .98],
+    ['reach-v   2', SawyerReachV2Policy(), .1, .98],
     ['reach-wall-v2', SawyerReachWallV2Policy(), .1, .96],
     ['push-back-v1', SawyerPushBackV1Policy(), .1, .90],
     ['push-back-v2', SawyerPushBackV2Policy(), .0, .91],
@@ -239,7 +244,7 @@ def env(request):
     test_cases,
     indirect=['env']
 )
-def test_scripted_policy(env, policy, act_noise_pct, expected_success_rate, iters=100):
+def test_scripted_policy(env, tasks, policy, act_noise_pct, expected_success_rate, iters=100):
     """Tests whether a given policy solves an environment in a stateless manner
     Args:
         env (metaworld.envs.MujocoEnv): Environment to test
@@ -256,6 +261,38 @@ def test_scripted_policy(env, policy, act_noise_pct, expected_success_rate, iter
 
     successes = 0
     for _ in range(iters):
-        successes += float(trajectory_summary(env, policy, act_noise_pct, render=False)[0])
-    print(successes)
-    assert successes >= expected_success_rate * iters
+        env.set_task(random.choice(tasks))
+        env._partially_observable = False
+        successes += float(trajectory_summary(env, policy, act_noise_pct, render=True)[0])
+    print("success_rate : {} %".format(successes * 100 / iters))
+    # assert successes >= expected_success_rate * iters
+    env.close()
+
+if __name__ == '__main__':
+    ml10_train_env = {
+        'reach-v2' : (SawyerReachV2Policy, .0, .99),
+        'push-v2' : (SawyerPushV2Policy, .0, .97),
+        'pick-place-v2': (SawyerPickPlaceV2Policy, .0, .95),
+        'door-open-v2': (SawyerDoorOpenV2Policy, .0, .94),
+        'drawer-close-v2': (SawyerDrawerCloseV2Policy, .0, .99),
+        'button-press-topdown-v2': (SawyerButtonPressTopdownV2Policy, .0, .95),
+        'peg-insert-side-v2': (SawyerPegInsertionSideV2Policy, .0, .89),
+        'window-open-v2': (SawyerWindowOpenV2Policy, 0., .94),
+        'sweep-v2': (SawyerSweepV2Policy, .0, 0.99),
+        'basketball-v2': (SawyerBasketballV2Policy, .0, .98)
+    }
+
+    for name, (policy, noise, expect_rate) in ml10_train_env.items():
+
+        benchmark = metaworld.ML10()
+        env_cls = benchmark.train_classes[name]
+        # env_cls = ALL_V2_ENVIRONMENTS_GOAL_OBSERVABLE[name + '-goal-observable']
+        # env_cls = ALL_V2_ENVIRONMENTS_GOAL_HIDDEN[name + '-goal-hidden']
+
+        tasks = [task for task in benchmark.train_tasks if task.env_name == name]
+        env = env_cls()
+        print(env.observation_space)
+        print(env.action_space)
+        print("start evaluating {} environment".format(env))
+
+        test_scripted_policy(env, tasks, policy(), noise, expect_rate, 10)

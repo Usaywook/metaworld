@@ -11,12 +11,19 @@ class ML10Env(gym.Env):
         self.benchmark = metaworld.ML10()
         self.set_train_env()
         self.is_training = True
+        self.goal_observable = True
+
+        if self.goal_observable:
+            self.env._partially_observable = False
 
     def reset(self):
         if self.is_training:
             self.set_train_env()
         else:
             self.set_eval_env()
+        if self.goal_observable:
+            self.env._partially_observable = False
+
         return self.env.reset()
 
     def step(self, action):

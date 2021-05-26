@@ -16,7 +16,6 @@ class SawyerReachV2Policy(Policy):
             'unused_2':  obs[7:-3],
             'goal_pos': obs[-3:],
         }
-
     def get_action(self, obs):
         o_d = self._parse_obs(obs)
 
