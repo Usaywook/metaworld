@@ -17,6 +17,7 @@ class ML10Env(gym.Env):
             self.env._partially_observable = False
 
     def reset(self):
+        self.env.close()
         if self.is_training:
             self.set_train_env()
         else:
@@ -27,7 +28,10 @@ class ML10Env(gym.Env):
         return self.env.reset()
 
     def step(self, action):
-        return self.env.step(action)
+        next_state, reward, done, info = self.env.step(action)
+        if info['success'] == True:
+            done = True
+        return next_state, reward, done, info
 
     def render(self, mode='human'):
         return self.env.render(mode=mode)
@@ -35,9 +39,9 @@ class ML10Env(gym.Env):
     def set_train_env(self):
         envs = [(idx, name, env_cls) for idx, (name, env_cls) in enumerate(self.benchmark.train_classes.items())]
         self.num_envs = len(envs)
-        self.name_idx, name, env_cls = random.choice(envs)
+        self.name_idx, self.name, env_cls = random.choice(envs)
 
-        tasks = [task for task in self.benchmark.train_tasks if task.env_name == name]
+        tasks = [task for task in self.benchmark.train_tasks if task.env_name == self.name]
         self.num_tasks = len(tasks)
         self.task_idx, task = random.choice(list(zip(range(self.num_tasks), tasks)))
 
@@ -50,9 +54,9 @@ class ML10Env(gym.Env):
     def set_eval_env(self):
         envs = [(idx, name, env_cls) for idx, (name, env_cls) in enumerate(self.benchmark.test_classes.items())]
         self.num_envs = len(envs)
-        self.name_idx, name, env_cls = random.choice(envs)
+        self.name_idx, self.name, env_cls = random.choice(envs)
 
-        tasks = [task for task in self.benchmark.test_tasks if task.env_name == name]
+        tasks = [task for task in self.benchmark.test_tasks if task.env_name == self.name]
         self.num_tasks = len(tasks)
         self.task_idx, task = random.choice(list(zip(range(self.num_tasks), tasks)))
 
