@@ -127,6 +127,7 @@ class ML5Env(gym.Env):
     def set_eval_env(self):
         envs = [(idx, name, env_cls) for idx, (name, env_cls) in enumerate(self.benchmark.test_classes.items())]
         self.num_envs = len(envs)
+
         self.name_idx, self.name, env_cls = random.choice(envs)
 
         tasks = [task for task in self.benchmark.test_tasks if task.env_name == self.name]
@@ -182,6 +183,7 @@ class MT10Env(gym.Env):
     def set_env(self):
         envs = [(idx, name, env_cls) for idx, (name, env_cls) in enumerate(self.benchmark.train_classes.items())]
         self.num_envs = len(envs)
+
         self.name_idx, self.name, env_cls = random.choice(envs)
 
         tasks = [task for task in self.benchmark.train_tasks if task.env_name == self.name]

@@ -74,12 +74,6 @@ def trajectory_generator(env, policy, act_noise_pct, render=False):
         assert env.observation_space.contains(o), obs_space_error_text(env, o)
         if render:
             env.render()
-            # im = env.render('rgb_array') / 255.
-            # ax = plt.gca()
-            # ax.clear()
-            # ax.imshow(im)
-            # plt.draw()
-            # plt.pause(1e-8)
 
         yield r, done, info
 
