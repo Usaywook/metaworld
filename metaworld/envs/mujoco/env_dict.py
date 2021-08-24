@@ -242,23 +242,20 @@ MEDIUM_MODE_CLS_DICT = OrderedDict(
       OrderedDict((('reach-v1', SawyerReachPushPickPlaceEnv),
                    ('push-v1', SawyerReachPushPickPlaceEnv),
                    ('pick-place-v1', SawyerReachPushPickPlaceEnv),
-                   ('door-open-v1', SawyerDoorEnv), ('drawer-close-v1',
-                                                     SawyerDrawerCloseEnv),
+                   ('door-open-v1', SawyerDoorEnv),
+                   ('drawer-close-v1', SawyerDrawerCloseEnv),
                    ('button-press-topdown-v1', SawyerButtonPressTopdownEnv),
-                   ('peg-insert-side-v1',
-                    SawyerPegInsertionSideEnv), ('window-open-v1',
-                                                 SawyerWindowOpenEnv),
-                   ('sweep-v1', SawyerSweepEnv), ('basketball-v1',
-                                                  SawyerBasketballEnv)))),
+                   ('peg-insert-side-v1', SawyerPegInsertionSideEnv),
+                   ('window-open-v1', SawyerWindowOpenEnv),
+                   ('sweep-v1', SawyerSweepEnv),
+                   ('basketball-v1', SawyerBasketballEnv)))),
      ('test',
-      OrderedDict(
-          (('drawer-open-v1', SawyerDrawerOpenEnv), ('door-close-v1',
-                                                     SawyerDoorCloseEnv),
-           ('shelf-place-v1', SawyerShelfPlaceEnv), ('sweep-into-v1',
-                                                     SawyerSweepIntoGoalEnv), (
-                                                         'lever-pull-v1',
-                                                         SawyerLeverPullEnv,
-                                                     ))))))
+      OrderedDict((('drawer-open-v1', SawyerDrawerOpenEnv),
+                   ('door-close-v1', SawyerDoorCloseEnv),
+                   ('shelf-place-v1', SawyerShelfPlaceEnv),
+                   ('sweep-into-v1', SawyerSweepIntoGoalEnv),
+                   ('lever-pull-v1', SawyerLeverPullEnv,))))))
+
 medium_mode_train_args_kwargs = {
     key: dict(args=[],
               kwargs={
@@ -364,16 +361,59 @@ for key, env_cls in HARD_MODE_CLS_DICT['test'].items():
 
 ############################## V2 DICTS ##############################
 
+ML5_V2 = OrderedDict(
+    (('train',
+      OrderedDict(
+          (('window-open-v2', SawyerWindowOpenEnvV2),
+           ('door-unlock-v2', SawyerDoorUnlockEnvV2),
+           ('drawer-open-v2', SawyerDrawerOpenEnvV2),
+           ('button-press-topdown-v2', SawyerButtonPressTopdownEnvV2),
+           ('peg-insert-side-v2', SawyerPegInsertionSideEnvV2)
+           ))),
+     ('test',
+      OrderedDict(
+          (('window-close-v2', SawyerWindowCloseEnvV2),
+           ('door-lock-v2', SawyerDoorLockEnvV2),
+           ('drawer-close-v2', SawyerDrawerCloseEnvV2),
+           ('button-press-v2', SawyerButtonPressEnvV2),
+           ('peg-unplug-side-v2', SawyerPegUnplugSideEnvV2),
+           )))))
+
+ml5_train_args_kwargs = {
+    key: dict(args=[],
+              kwargs={
+                  'task_id': list(ALL_V2_ENVIRONMENTS.keys()).index(key),
+              })
+    for key, _ in ML5_V2['train'].items()
+}
+
+ml5_test_args_kwargs = {
+    key: dict(args=[],
+              kwargs={'task_id': list(ALL_V2_ENVIRONMENTS.keys()).index(key)})
+    for key, _ in ML5_V2['test'].items()
+}
+
+ML5_ARGS_KWARGS = dict(
+    train=ml5_train_args_kwargs,
+    test=ml5_test_args_kwargs,
+)
+
 MT10_V2 = OrderedDict(
-    (('reach-v2', SawyerReachEnvV2), ('push-v2', SawyerPushEnvV2),
+    (('reach-v2', SawyerReachEnvV2),
+     ('push-v2', SawyerPushEnvV2),
      ('pick-place-v2', SawyerPickPlaceEnvV2),
      ('door-open-v2', SawyerDoorEnvV2),
-     ('drawer-open-v2', SawyerDrawerOpenEnvV2),
+     # ('drawer-open-v2', SawyerDrawerOpenEnvV2),
      ('drawer-close-v2', SawyerDrawerCloseEnvV2),
+     # ('button-press-v2', SawyerButtonPressEnvV2),
      ('button-press-topdown-v2', SawyerButtonPressTopdownEnvV2),
      ('peg-insert-side-v2', SawyerPegInsertionSideEnvV2),
      ('window-open-v2', SawyerWindowOpenEnvV2),
-     ('window-close-v2', SawyerWindowCloseEnvV2)), )
+     # ('window-close-v2', SawyerWindowCloseEnvV2)),
+     # ('sweep-into-v2', SawyerSweepIntoGoalEnvV2),
+     ('sweep-v2', SawyerSweepEnvV2),
+     ('basketball-v2', SawyerBasketballEnvV2)),
+)
 
 MT10_V2_ARGS_KWARGS = {
     key: dict(args=[],
@@ -384,25 +424,23 @@ MT10_V2_ARGS_KWARGS = {
 ML10_V2 = OrderedDict(
     (('train',
       OrderedDict(
-          (('reach-v2', SawyerReachEnvV2), ('push-v2', SawyerPushEnvV2),
+          (('reach-v2', SawyerReachEnvV2),
+           ('push-v2', SawyerPushEnvV2),
            ('pick-place-v2', SawyerPickPlaceEnvV2),
-           ('door-open-v2', SawyerDoorEnvV2), ('drawer-close-v2',
-                                               SawyerDrawerCloseEnvV2),
-           ('button-press-topdown-v2', SawyerButtonPressTopdownEnvV2),
-           ('peg-insert-side-v2',
-            SawyerPegInsertionSideEnvV2), ('window-open-v2',
-                                           SawyerWindowOpenEnvV2),
-           ('sweep-v2', SawyerSweepEnvV2), ('basketball-v2',
-                                            SawyerBasketballEnvV2)))),
+           ('dial-turn-v2', SawyerDialTurnEnvV2),
+           ('drawer-close-v2', SawyerDrawerCloseEnvV2),
+           ('button-press-v2', SawyerButtonPressEnvV2),
+           ('peg-insert-side-v2', SawyerPegInsertionSideEnvV2),
+           ('window-open-v2', SawyerWindowOpenEnvV2),
+           ('sweep-into-v2', SawyerSweepIntoGoalEnvV2),
+           ('basketball-v2', SawyerBasketballEnvV2)))),
      ('test',
       OrderedDict(
           (('drawer-open-v2', SawyerDrawerOpenEnvV2),
-           ('door-close-v2', SawyerDoorCloseEnvV2), ('shelf-place-v2',
-                                                     SawyerShelfPlaceEnvV2),
-           ('sweep-into-v2', SawyerSweepIntoGoalEnvV2), (
-               'lever-pull-v2',
-               SawyerLeverPullEnvV2,
-           ))))))
+           ('door-close-v2', SawyerDoorCloseEnvV2),
+           ('shelf-place-v2', SawyerShelfPlaceEnvV2),
+           ('sweep-v2', SawyerSweepEnvV2),
+           ('lever-pull-v2', SawyerLeverPullEnvV2, ))))))
 
 ml10_train_args_kwargs = {
     key: dict(args=[],

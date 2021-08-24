@@ -10,6 +10,7 @@ import gym
 
 try:
     import mujoco_py
+
 except ImportError as e:
     raise error.DependencyNotInstalled("{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
 
@@ -79,6 +80,8 @@ class MujocoEnv(gym.Env, abc.ABC):
         Optionally implement this method, if you need to tinker with camera position
         and so forth.
         """
+        self.viewer.cam.azimuth = 135
+        self.viewer.cam.elevation = -20
         pass
 
     @_assert_task_is_set
@@ -126,8 +129,8 @@ class MujocoEnv(gym.Env, abc.ABC):
             return self.sim.render(
                 *self._rgb_array_res,
                 mode='offscreen',
-                camera_name='topview'
-            )[:, :, ::-1]
+                camera_name='corner2' # 'topview', 'corner', 'corner2', 'behindGripper', 'gripperPOV'
+            ) #[:, :, ::-1]
         else:
             raise ValueError("mode can only be either 'human' or 'rgb_array'")
 
@@ -145,6 +148,9 @@ class MujocoEnv(gym.Env, abc.ABC):
             self._viewers[mode] = self.viewer
         self.viewer_setup()
         return self.viewer
+
+    def set_context(self, context):
+        self._get_viewer('human').context = context
 
     def get_body_com(self, body_name):
         return self.data.get_body_xpos(body_name)

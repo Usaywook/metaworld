@@ -174,6 +174,19 @@ class ML10(Benchmark):
                                        _ML_OVERRIDE,
                                        seed=seed)
 
+class ML5(Benchmark):
+    def __init__(self, seed=None):
+        super().__init__()
+        self._train_classes = _env_dict.ML5_V2['train']
+        self._test_classes = _env_dict.ML5_V2['test']
+        train_kwargs = _env_dict.ml5_train_args_kwargs
+        self._train_tasks = _make_tasks(self._train_classes, train_kwargs,
+                                        _ML_OVERRIDE,
+                                        seed=seed)
+        test_kwargs = _env_dict.ml5_test_args_kwargs
+        self._test_tasks = _make_tasks(self._test_classes, test_kwargs,
+                                       _ML_OVERRIDE,
+                                       seed=seed)
 
 class ML45(Benchmark):
     def __init__(self, seed=None):
@@ -213,11 +226,25 @@ class MT50(Benchmark):
                                         seed=seed)
         self._test_tasks = []
 
-__all__ = ["ML1", "MT1", "ML10", "MT10", "ML45", "MT50"]
+__all__ = ["ML1", "MT1", "ML5", "ML10", "MT10", "ML45", "MT50"]
 
 register(
-    id='ML10-v0',
+    id='ML10-v1',
     entry_point='metaworld.envs.metaworld_env:ML10Env',
+    max_episode_steps=200,
+    reward_threshold=-25.0,
+)
+
+register(
+    id='ML5-v0',
+    entry_point='metaworld.envs.metaworld_env:ML5Env',
+    max_episode_steps=200,
+    reward_threshold=-25.0,
+)
+
+register(
+    id='MT10-v0',
+    entry_point='metaworld.envs.metaworld_env:MT10Env',
     max_episode_steps=200,
     reward_threshold=-25.0,
 )

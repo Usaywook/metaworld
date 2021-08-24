@@ -269,23 +269,72 @@ def test_scripted_policy(env, tasks, policy, act_noise_pct, expected_success_rat
     env.close()
 
 if __name__ == '__main__':
+
+    ml5_test_env = {
+        'window-close-v2': (SawyerWindowCloseV2Policy, .1, .95),
+        'door-lock-v2': (SawyerDoorLockV2Policy, .0, 1.),
+        'drawer-close-v2': (SawyerDrawerCloseV2Policy, .0, .99),
+        'button-press-v2' : (SawyerButtonPressV2Policy, .1, .98),
+        'peg-unplug-side-v2' : (SawyerPegUnplugSideV2Policy, .0, .99)
+    }
+
+    for name, (policy, noise, expect_rate) in ml5_test_env.items():
+        benchmark = metaworld.ML5()
+        env_cls = benchmark.test_classes[name]
+
+        tasks = [task for task in benchmark.test_tasks if task.env_name == name]
+        env = env_cls()
+        print(env.observation_space)
+        print(env.action_space)
+        print("start evaluating {} environment".format(env))
+
+        test_scripted_policy(env, tasks, policy(), noise, expect_rate, 10)
+
     ml10_train_env = {
-        'reach-v2' : (SawyerReachV2Policy, .0, .99),
-        'push-v2' : (SawyerPushV2Policy, .0, .97),
+        'reach-v2': (SawyerReachV2Policy, .0, .99),
+        'push-v2': (SawyerPushV2Policy, .0, .97),
+        'pick-place-v2': (SawyerPickPlaceV2Policy, .0, .95),
+        'drawer-close-v2': (SawyerDrawerCloseV2Policy, .0, .99),
+        'button-press-v2': (SawyerButtonPressV2Policy, .1, .98),
+        'dial-turn-v2': (SawyerDialTurnV2Policy, .0, 0.96),
+        'peg-insert-side-v2': (SawyerPegInsertionSideV2Policy, .0, .89),
+        'window-open-v2': (SawyerWindowOpenV2Policy, 0., .94),
+        'sweep-into-v2': (SawyerSweepIntoV2Policy, .0, 0.99),
+        'basketball-v2': (SawyerBasketballV2Policy, .0, .98)
+    }
+
+    for name, (policy, noise, expect_rate) in ml10_train_env.items():
+        benchmark = metaworld.ML10()
+        env_cls = benchmark.train_classes[name]
+
+        # env_cls = ALL_V2_ENVIRONMENTS_GOAL_OBSERVABLE[name + '-goal-observable']
+        # env_cls = ALL_V2_ENVIRONMENTS_GOAL_HIDDEN[name + '-goal-hidden']
+
+        tasks = [task for task in benchmark.train_tasks if task.env_name == name]
+        env = env_cls()
+        print(env.observation_space)
+        print(env.action_space)
+        print("start evaluating {} environment".format(env))
+
+        test_scripted_policy(env, tasks, policy(), noise, expect_rate, 10)
+
+    mt10_train_env = {
+        'reach-v2': (SawyerReachV2Policy, .0, .99),
+        'push-v2': (SawyerPushV2Policy, .0, .97),
         'pick-place-v2': (SawyerPickPlaceV2Policy, .0, .95),
         'door-open-v2': (SawyerDoorOpenV2Policy, .0, .94),
         'drawer-close-v2': (SawyerDrawerCloseV2Policy, .0, .99),
-        'button-press-topdown-v2': (SawyerButtonPressTopdownV2Policy, .0, .95),
+        'button-press-topdown-v2': (SawyerButtonPressTopdownV2Policy, .1, .95),
         'peg-insert-side-v2': (SawyerPegInsertionSideV2Policy, .0, .89),
         'window-open-v2': (SawyerWindowOpenV2Policy, 0., .94),
         'sweep-v2': (SawyerSweepV2Policy, .0, 0.99),
         'basketball-v2': (SawyerBasketballV2Policy, .0, .98)
     }
 
-    for name, (policy, noise, expect_rate) in ml10_train_env.items():
-
-        benchmark = metaworld.ML10()
+    for name, (policy, noise, expect_rate) in mt10_train_env.items():
+        benchmark = metaworld.MT10()
         env_cls = benchmark.train_classes[name]
+
         # env_cls = ALL_V2_ENVIRONMENTS_GOAL_OBSERVABLE[name + '-goal-observable']
         # env_cls = ALL_V2_ENVIRONMENTS_GOAL_HIDDEN[name + '-goal-hidden']
 

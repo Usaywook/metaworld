@@ -41,6 +41,8 @@ def trajectory_summary(env, policy, act_noise_pct, render=False, end_on_success=
 
     return success, rewards, returns, first_success
 
+import matplotlib.pyplot as plt
+plt.ion()
 
 def trajectory_generator(env, policy, act_noise_pct, render=False):
     """Tests whether a given policy solves an environment
@@ -61,7 +63,7 @@ def trajectory_generator(env, policy, act_noise_pct, render=False):
     o = env.reset()
     assert o.shape == env.observation_space.shape
     assert env.observation_space.contains(o), obs_space_error_text(env, o)
-
+    context = 0
     for _ in range(env.max_path_length):
         # o[-3:] = env._target_pos
         # assert not (o[-3:] == np.zeros(3)).all()
@@ -72,6 +74,12 @@ def trajectory_generator(env, policy, act_noise_pct, render=False):
         assert env.observation_space.contains(o), obs_space_error_text(env, o)
         if render:
             env.render()
+            # im = env.render('rgb_array') / 255.
+            # ax = plt.gca()
+            # ax.clear()
+            # ax.imshow(im)
+            # plt.draw()
+            # plt.pause(1e-8)
 
         yield r, done, info
 

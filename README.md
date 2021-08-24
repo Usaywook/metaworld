@@ -187,7 +187,57 @@ assert not (next_obs1[-3:] == next_obs3[-3:]).all() # 2 envs initialized with di
 assert not (next_obs1[-3:] == np.zeros(3)).all()   # The env's are goal observable, meaning the goal is not zero'd out
 
 ```
+## Changing Tasks
+changing ordered dictionary in metaworld/envs/mujoco/env_dict.py
+```
+ML10_V2 = OrderedDict(
+    (('train',
+      OrderedDict(
+          (('reach-v2', SawyerReachEnvV2),
+           ('push-v2', SawyerPushEnvV2),
+           ('pick-place-v2', SawyerPickPlaceEnvV2),
+           ('dial-turn-v2', SawyerDialTurnEnvV2),
+           ('drawer-close-v2', SawyerDrawerCloseEnvV2),
+           ('button-press-v2', SawyerButtonPressEnvV2),
+           ('peg-insert-side-v2', SawyerPegInsertionSideEnvV2),
+           ('window-open-v2', SawyerWindowOpenEnvV2),
+           ('sweep-v2', SawyerSweepEnvV2),
+           ('basketball-v2', SawyerBasketballEnvV2)))),
+     ('test',
+      OrderedDict(
+          (('drawer-open-v2', SawyerDrawerOpenEnvV2),
+           ('door-close-v2', SawyerDoorCloseEnvV2),
+           ('shelf-place-v2', SawyerShelfPlaceEnvV2),
+           ('sweep-into-v2', SawyerSweepIntoGoalEnvV2),
+           ('lever-pull-v2', SawyerLeverPullEnvV2, ))))))
+```
 
+to test the optimal policy
+changing ordered dictionary in tests/metaworld/env/mujoco/sawyer_xyz/test_scripted_policies.py and run
+```
+ml10_train_env = {
+        'reach-v2' : (SawyerReachV2Policy, .0, .99),
+        'push-v2' : (SawyerPushV2Policy, .0, .97),
+        'pick-place-v2': (SawyerPickPlaceV2Policy, .0, .95),
+        'drawer-close-v2': (SawyerDrawerCloseV2Policy, .0, .99),
+        'button-press-v2' : (SawyerButtonPressV2Policy, .1, .98),
+        'dial-turn-v2' : (SawyerDialTurnV2Policy, .0, 0.96),
+        'peg-insert-side-v2': (SawyerPegInsertionSideV2Policy, .0, .89),
+        'window-open-v2': (SawyerWindowOpenV2Policy, 0., .94),
+        'sweep-v2': (SawyerSweepV2Policy, .0, 0.99),
+        'basketball-v2': (SawyerBasketballV2Policy, .0, .98)
+    }
+```
+
+to register environment in metaworld/__init__.py
+````
+register(
+    id='ML10-v1',
+    entry_point='metaworld.envs.metaworld_env:ML10Env',
+    max_episode_steps=200,
+    reward_threshold=-25.0,
+)
+```
 ## Citing Meta-World
 If you use Meta-World for academic research, please kindly cite our CoRL 2019 paper the using following BibTeX entry.
 
